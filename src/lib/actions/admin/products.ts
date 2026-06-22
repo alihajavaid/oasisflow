@@ -8,7 +8,6 @@ import { saveUploadedImage, imagePathSchema } from "@/lib/upload";
 
 const schema = z.object({
   name: z.string().min(2),
-  slug: z.string().min(2).regex(/^[a-z0-9-]+$/, "Use lowercase letters, numbers, and dashes only"),
   description: z.string().optional(),
   price: z.coerce.number().positive(),
   unit: z.string().min(1),
@@ -16,12 +15,31 @@ const schema = z.object({
   stock: z.coerce.number().int().min(0),
 });
 
+function slugify(name: string) {
+  return (
+    name
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "") || "product"
+  );
+}
+
+async function uniqueProductSlug(base: string) {
+  let slug = base;
+  let suffix = 1;
+  while (await prisma.product.findUnique({ where: { slug } })) {
+    suffix += 1;
+    slug = `${base}-${suffix}`;
+  }
+  return slug;
+}
+
 export async function createProduct(formData: FormData) {
   await requireUser(["ADMIN"]);
   const uploadedUrl = await saveUploadedImage(formData.get("imageFile") as File | null);
   const data = schema.parse({
     name: formData.get("name"),
-    slug: formData.get("slug"),
     description: formData.get("description") || undefined,
     price: formData.get("price"),
     unit: formData.get("unit"),
@@ -29,7 +47,8 @@ export async function createProduct(formData: FormData) {
     stock: formData.get("stock"),
   });
   if (!data.imageUrl) throw new Error("Upload an image or provide an image URL.");
-  await prisma.product.create({ data: { ...data, imageUrl: data.imageUrl } });
+  const slug = await uniqueProductSlug(slugify(data.name));
+  await prisma.product.create({ data: { ...data, slug, imageUrl: data.imageUrl } });
   revalidatePath("/admin/products");
   revalidatePath("/products");
   revalidatePath("/");
@@ -41,7 +60,6 @@ export async function updateProduct(formData: FormData) {
   const uploadedUrl = await saveUploadedImage(formData.get("imageFile") as File | null);
   const data = schema.partial().parse({
     name: formData.get("name"),
-    slug: formData.get("slug"),
     description: formData.get("description") || undefined,
     price: formData.get("price"),
     unit: formData.get("unit"),

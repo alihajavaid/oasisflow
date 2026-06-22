@@ -14,7 +14,6 @@ export default async function AdminProductsPage() {
 
       <form action={createProduct} encType="multipart/form-data" className="card mb-8 grid gap-3 p-5 sm:grid-cols-2 lg:grid-cols-3">
         <input className="input" name="name" placeholder="Name" required />
-        <input className="input" name="slug" placeholder="slug-like-this" required />
         <input className="input" name="unit" placeholder="Unit (e.g. 5 Gallon Bottle)" required />
         <input className="input" name="price" type="number" step="0.01" placeholder="Price (AED)" required />
         <input className="input" name="stock" type="number" placeholder="Stock quantity" required />
