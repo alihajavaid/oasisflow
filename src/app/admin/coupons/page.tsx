@@ -1,7 +1,8 @@
 import Image from "next/image";
 import { prisma } from "@/lib/prisma";
-import { createCouponBookType, toggleCouponBookTypeActive } from "@/lib/actions/admin/coupons";
+import { createCouponBookType, toggleCouponBookTypeActive, deleteCouponBookType } from "@/lib/actions/admin/coupons";
 import { BASE_PATH } from "@/lib/constants";
+import { ConfirmSubmitButton } from "@/components/ConfirmSubmitButton";
 
 export const dynamic = "force-dynamic";
 
@@ -62,10 +63,21 @@ export default async function AdminCouponsPage() {
                 <td className="p-2">AED {t.price.toFixed(2)}</td>
                 <td className="p-2">{t.active ? "Active" : "Hidden"}</td>
                 <td className="p-2">
-                  <form action={toggleCouponBookTypeActive}>
-                    <input type="hidden" name="id" value={t.id} />
-                    <button type="submit" className="btn-secondary px-3 py-1 text-xs">{t.active ? "Hide" : "Activate"}</button>
-                  </form>
+                  <div className="flex gap-2">
+                    <form action={toggleCouponBookTypeActive}>
+                      <input type="hidden" name="id" value={t.id} />
+                      <button type="submit" className="btn-secondary px-3 py-1 text-xs">{t.active ? "Hide" : "Activate"}</button>
+                    </form>
+                    <form action={deleteCouponBookType}>
+                      <input type="hidden" name="id" value={t.id} />
+                      <ConfirmSubmitButton
+                        confirmMessage={`Permanently delete "${t.name}" (${t.code})? This can't be undone.`}
+                        className="rounded-md border border-red-200 px-3 py-1 text-xs font-semibold text-red-600 hover:bg-red-50"
+                      >
+                        Delete
+                      </ConfirmSubmitButton>
+                    </form>
+                  </div>
                 </td>
               </tr>
             ))}

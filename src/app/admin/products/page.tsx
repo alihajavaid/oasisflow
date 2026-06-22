@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { prisma } from "@/lib/prisma";
-import { createProduct, toggleProductActive } from "@/lib/actions/admin/products";
+import { createProduct, toggleProductActive, deleteProduct } from "@/lib/actions/admin/products";
+import { ConfirmSubmitButton } from "@/components/ConfirmSubmitButton";
 
 export const dynamic = "force-dynamic";
 
@@ -49,12 +50,23 @@ export default async function AdminProductsPage() {
                 <td className="p-2">{p.stock}</td>
                 <td className="p-2">{p.active ? "Active" : "Hidden"}</td>
                 <td className="p-2">
-                  <form action={toggleProductActive}>
-                    <input type="hidden" name="id" value={p.id} />
-                    <button type="submit" className="btn-secondary px-3 py-1 text-xs">
-                      {p.active ? "Hide" : "Activate"}
-                    </button>
-                  </form>
+                  <div className="flex gap-2">
+                    <form action={toggleProductActive}>
+                      <input type="hidden" name="id" value={p.id} />
+                      <button type="submit" className="btn-secondary px-3 py-1 text-xs">
+                        {p.active ? "Hide" : "Activate"}
+                      </button>
+                    </form>
+                    <form action={deleteProduct}>
+                      <input type="hidden" name="id" value={p.id} />
+                      <ConfirmSubmitButton
+                        confirmMessage={`Permanently delete "${p.name}"? This can't be undone.`}
+                        className="rounded-md border border-red-200 px-3 py-1 text-xs font-semibold text-red-600 hover:bg-red-50"
+                      >
+                        Delete
+                      </ConfirmSubmitButton>
+                    </form>
+                  </div>
                 </td>
               </tr>
             ))}

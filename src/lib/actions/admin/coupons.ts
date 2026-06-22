@@ -43,6 +43,24 @@ export async function toggleCouponBookTypeActive(formData: FormData) {
   revalidatePath("/coupons");
 }
 
+export async function deleteCouponBookType(formData: FormData) {
+  await requireUser(["ADMIN"]);
+  const id = String(formData.get("id"));
+  const [orderCount, bookCount] = await Promise.all([
+    prisma.orderItem.count({ where: { couponBookTypeId: id } }),
+    prisma.couponBook.count({ where: { typeId: id } }),
+  ]);
+  if (orderCount > 0 || bookCount > 0) {
+    throw new Error(
+      `Can't delete: ${bookCount} customer coupon book(s) and ${orderCount} order(s) reference this type. Deactivate it instead.`,
+    );
+  }
+  await prisma.couponBookType.delete({ where: { id } });
+  revalidatePath("/admin/coupons");
+  revalidatePath("/coupons");
+  revalidatePath("/");
+}
+
 export async function voidCoupon(formData: FormData) {
   await requireUser(["ADMIN"]);
   const id = String(formData.get("id"));

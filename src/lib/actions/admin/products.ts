@@ -62,3 +62,16 @@ export async function toggleProductActive(formData: FormData) {
   revalidatePath("/admin/products");
   revalidatePath("/products");
 }
+
+export async function deleteProduct(formData: FormData) {
+  await requireUser(["ADMIN"]);
+  const id = String(formData.get("id"));
+  const orderCount = await prisma.orderItem.count({ where: { productId: id } });
+  if (orderCount > 0) {
+    throw new Error(`Can't delete: ${orderCount} order(s) reference this product. Deactivate it instead.`);
+  }
+  await prisma.product.delete({ where: { id } });
+  revalidatePath("/admin/products");
+  revalidatePath("/products");
+  revalidatePath("/");
+}
