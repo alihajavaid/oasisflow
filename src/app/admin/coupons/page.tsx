@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { prisma } from "@/lib/prisma";
 import { createCouponBookType, toggleCouponBookTypeActive } from "@/lib/actions/admin/coupons";
+import { BASE_PATH } from "@/lib/constants";
 
 export const dynamic = "force-dynamic";
 
@@ -18,7 +19,7 @@ export default async function AdminCouponsPage() {
     <div>
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-2xl font-bold text-brand-900">Coupon Books</h1>
-        <a href="/admin/coupons/export" className="btn-secondary">Export to Excel</a>
+        <a href={`${BASE_PATH}/admin/coupons/export`} className="btn-secondary">Export to Excel</a>
       </div>
 
       <form action={createCouponBookType} encType="multipart/form-data" className="card mb-8 grid gap-3 p-5 sm:grid-cols-2 lg:grid-cols-3">

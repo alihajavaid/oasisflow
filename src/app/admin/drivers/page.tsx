@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { createDriver, updateDriverAreas } from "@/lib/actions/admin/drivers";
 import { toggleUserActive } from "@/lib/actions/admin/users";
+import { BASE_PATH } from "@/lib/constants";
 
 export const dynamic = "force-dynamic";
 
@@ -14,7 +15,7 @@ export default async function AdminDriversPage() {
     <div>
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-2xl font-bold text-brand-900">Drivers</h1>
-        <a href="/admin/drivers/export" className="btn-secondary">Export to Excel</a>
+        <a href={`${BASE_PATH}/admin/drivers/export`} className="btn-secondary">Export to Excel</a>
       </div>
 
       <form action={createDriver} className="card mb-8 grid gap-3 p-5 sm:grid-cols-2 lg:grid-cols-3">

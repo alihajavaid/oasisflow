@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { createInventoryItem, adjustInventory } from "@/lib/actions/admin/inventory";
+import { BASE_PATH } from "@/lib/constants";
 
 export const dynamic = "force-dynamic";
 
@@ -13,7 +14,7 @@ export default async function AdminInventoryPage() {
     <div>
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-2xl font-bold text-brand-900">Inventory</h1>
-        <a href="/admin/inventory/export" className="btn-secondary">Export to Excel</a>
+        <a href={`${BASE_PATH}/admin/inventory/export`} className="btn-secondary">Export to Excel</a>
       </div>
 
       <form action={createInventoryItem} className="card mb-8 grid gap-3 p-5 sm:grid-cols-2 lg:grid-cols-3">

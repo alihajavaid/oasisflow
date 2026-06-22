@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { updateOrderStatus, updatePaymentStatus } from "@/lib/actions/admin/orders";
+import { BASE_PATH } from "@/lib/constants";
 
 export const dynamic = "force-dynamic";
 
@@ -17,7 +18,7 @@ export default async function AdminOrdersPage() {
     <div>
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-2xl font-bold text-brand-900">Orders</h1>
-        <a href="/admin/orders/export" className="btn-secondary">Export to Excel</a>
+        <a href={`${BASE_PATH}/admin/orders/export`} className="btn-secondary">Export to Excel</a>
       </div>
       <div className="flex flex-col gap-4">
         {orders.map((o) => (

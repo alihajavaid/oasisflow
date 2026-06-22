@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { BulkWhatsAppComposer } from "@/components/BulkWhatsAppComposer";
+import { BASE_PATH } from "@/lib/constants";
 
 export const dynamic = "force-dynamic";
 
@@ -14,7 +15,7 @@ export default async function AdminMessagesPage() {
     <div>
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-2xl font-bold text-brand-900">Bulk WhatsApp Messages</h1>
-        <a href="/admin/customers/export" className="btn-secondary">Export Customer List</a>
+        <a href={`${BASE_PATH}/admin/customers/export`} className="btn-secondary">Export Customer List</a>
       </div>
       <p className="mb-6 text-sm text-brand-700">
         Built from your customer database ({customers.length} active customers). Select recipients, write a

@@ -1,3 +1,4 @@
+export const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 export const WHATSAPP_NUMBER = "971566660755";
 export const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_NUMBER}`;
 export const COMPANY_NAME = "OasisFlow";

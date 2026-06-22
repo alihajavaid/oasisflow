@@ -1,11 +1,12 @@
 import { CustomerImportForm } from "@/components/CustomerImportForm";
+import { BASE_PATH } from "@/lib/constants";
 
 export default function AdminCustomerImportPage() {
   return (
     <div>
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-2xl font-bold text-brand-900">Import Existing Customers</h1>
-        <a href="/admin/customers/import-template" className="btn-secondary">Download Template</a>
+        <a href={`${BASE_PATH}/admin/customers/import-template`} className="btn-secondary">Download Template</a>
       </div>
       <p className="mb-6 max-w-2xl text-sm text-brand-700">
         Bring in customers you already had before this system &mdash; including their current coupon book balance

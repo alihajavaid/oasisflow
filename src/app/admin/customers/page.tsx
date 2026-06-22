@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { toggleUserActive } from "@/lib/actions/admin/users";
+import { BASE_PATH } from "@/lib/constants";
 
 export const dynamic = "force-dynamic";
 
@@ -15,8 +16,8 @@ export default async function AdminCustomersPage() {
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-2xl font-bold text-brand-900">Customers</h1>
         <div className="flex gap-2">
-          <a href="/admin/customers/import" className="btn-primary">Import Customers</a>
-          <a href="/admin/customers/export" className="btn-secondary">Export to Excel</a>
+          <a href={`${BASE_PATH}/admin/customers/import`} className="btn-primary">Import Customers</a>
+          <a href={`${BASE_PATH}/admin/customers/export`} className="btn-secondary">Export to Excel</a>
         </div>
       </div>
       <div className="overflow-x-auto">
