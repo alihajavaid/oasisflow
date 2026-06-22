@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { AddToCartButton } from "@/components/AddToCartButton";
 import { FadeIn, StaggerGroup, StaggerItem } from "@/components/motion/FadeIn";
 import { TiltCard } from "@/components/motion/TiltCard";
+import { resolveImageSrc } from "@/lib/constants";
 
 export const dynamic = "force-dynamic";
 
@@ -24,7 +25,7 @@ export default async function ProductsPage() {
             <TiltCard className="group card overflow-hidden">
               <div className="relative h-52 w-full overflow-hidden bg-white">
                 <Image
-                  src={p.imageUrl}
+                  src={resolveImageSrc(p.imageUrl)}
                   alt={p.name}
                   fill
                   sizes="(max-width: 768px) 100vw, 350px"

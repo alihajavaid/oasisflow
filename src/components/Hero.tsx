@@ -5,9 +5,10 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { TiltCard } from "@/components/motion/TiltCard";
 import { Bubbles } from "@/components/motion/Bubbles";
-import { WHATSAPP_LINK } from "@/lib/constants";
+import { WHATSAPP_LINK, resolveImageSrc } from "@/lib/constants";
 
 export function Hero({ title, subtitle, imageUrl }: { title: string; subtitle: string; imageUrl: string }) {
+  const resolvedImageUrl = resolveImageSrc(imageUrl);
   const words = title.trim().split(/\s+/);
   const highlightCount = words.length > 2 ? 2 : 1;
   const lead = words.slice(0, -highlightCount).join(" ");
@@ -67,7 +68,7 @@ export function Hero({ title, subtitle, imageUrl }: { title: string; subtitle: s
             <div className="relative flex-1">
               <TiltCard className="group h-full w-full" maxTilt={14} scale={1.04}>
                 <Image
-                  src={imageUrl}
+                  src={resolvedImageUrl}
                   alt="OasisFlow Bottles"
                   fill
                   sizes="(max-width: 768px) 90vw, 400px"
@@ -92,7 +93,7 @@ export function Hero({ title, subtitle, imageUrl }: { title: string; subtitle: s
                   filter: "blur(2px)",
                 }}
               >
-                <Image src={imageUrl} alt="" fill sizes="300px" className="object-contain" />
+                <Image src={resolvedImageUrl} alt="" fill sizes="300px" className="object-contain" />
               </div>
             </div>
           </div>

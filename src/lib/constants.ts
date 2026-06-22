@@ -8,3 +8,9 @@ export const COMPANY_EMAIL = "info@oasisflowwater.com";
 export const DEPOT_LAT = Number(process.env.COMPANY_DEPOT_LAT ?? 24.3392);
 export const DEPOT_LNG = Number(process.env.COMPANY_DEPOT_LNG ?? 54.5012);
 export const IMG = "https://oasisflowwater.com/images";
+
+/** Prefixes BASE_PATH onto locally-stored image paths (e.g. /uploads/x.jpg); leaves absolute URLs untouched. */
+export function resolveImageSrc(url: string) {
+  if (/^https?:\/\//.test(url)) return url;
+  return `${BASE_PATH}${url}`;
+}

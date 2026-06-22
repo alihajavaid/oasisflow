@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { prisma } from "@/lib/prisma";
 import { createCouponBookType, toggleCouponBookTypeActive, deleteCouponBookType } from "@/lib/actions/admin/coupons";
-import { BASE_PATH } from "@/lib/constants";
+import { BASE_PATH, resolveImageSrc } from "@/lib/constants";
 import { ConfirmSubmitButton } from "@/components/ConfirmSubmitButton";
 
 export const dynamic = "force-dynamic";
@@ -56,7 +56,7 @@ export default async function AdminCouponsPage() {
           <tbody>
             {types.map((t) => (
               <tr key={t.id} className="border-t border-brand-100">
-                <td className="p-2"><Image src={t.imageUrl} alt={t.name} width={36} height={36} className="h-9 w-9 object-contain" /></td>
+                <td className="p-2"><Image src={resolveImageSrc(t.imageUrl)} alt={t.name} width={36} height={36} className="h-9 w-9 object-contain" /></td>
                 <td className="p-2">{t.code}</td>
                 <td className="p-2 font-medium text-brand-900">{t.name}</td>
                 <td className="p-2">{t.totalCoupons}</td>

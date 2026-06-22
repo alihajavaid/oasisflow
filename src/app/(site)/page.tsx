@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { getContentMap } from "@/lib/content";
-import { IMG } from "@/lib/constants";
+import { IMG, resolveImageSrc } from "@/lib/constants";
 import { Hero } from "@/components/Hero";
 import { Testimonials } from "@/components/Testimonials";
 import { TrustBadges } from "@/components/TrustBadges";
@@ -108,7 +108,7 @@ export default async function HomePage() {
                 <TiltCard className="group card overflow-hidden">
                   <div className="relative h-48 w-full overflow-hidden bg-white">
                     <Image
-                      src={p.imageUrl}
+                      src={resolveImageSrc(p.imageUrl)}
                       alt={p.name}
                       fill
                       sizes="(max-width: 768px) 100vw, 350px"
@@ -143,7 +143,7 @@ export default async function HomePage() {
               <TiltCard className="card overflow-hidden text-center">
                 <div className="relative h-40 w-full overflow-hidden bg-white">
                   <Image
-                    src={c.imageUrl}
+                    src={resolveImageSrc(c.imageUrl)}
                     alt={c.name}
                     fill
                     sizes="(max-width: 768px) 50vw, 250px"

@@ -2,6 +2,7 @@ import Image from "next/image";
 import { prisma } from "@/lib/prisma";
 import { createProduct, toggleProductActive, deleteProduct } from "@/lib/actions/admin/products";
 import { ConfirmSubmitButton } from "@/components/ConfirmSubmitButton";
+import { resolveImageSrc } from "@/lib/constants";
 
 export const dynamic = "force-dynamic";
 
@@ -43,7 +44,7 @@ export default async function AdminProductsPage() {
           <tbody>
             {products.map((p) => (
               <tr key={p.id} className="border-t border-brand-100">
-                <td className="p-2"><Image src={p.imageUrl} alt={p.name} width={40} height={40} className="h-10 w-10 object-contain" /></td>
+                <td className="p-2"><Image src={resolveImageSrc(p.imageUrl)} alt={p.name} width={40} height={40} className="h-10 w-10 object-contain" /></td>
                 <td className="p-2 font-medium text-brand-900">{p.name}</td>
                 <td className="p-2">AED {p.price.toFixed(2)}</td>
                 <td className="p-2">{p.stock}</td>

@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useActionState, useEffect } from "react";
 import { useCartStore } from "@/lib/cartStore";
 import { checkout, type CheckoutState } from "@/lib/actions/order";
+import { resolveImageSrc } from "@/lib/constants";
 
 const initialState: CheckoutState = {};
 
@@ -39,7 +40,7 @@ export default function CartPage() {
           {lines.map((l) => (
             <div key={`${l.kind}-${l.id}`} className="card flex items-center gap-4 p-4">
               <div className="relative h-16 w-16 shrink-0 bg-white">
-                <Image src={l.imageUrl} alt={l.name} fill sizes="64px" className="object-contain" />
+                <Image src={resolveImageSrc(l.imageUrl)} alt={l.name} fill sizes="64px" className="object-contain" />
               </div>
               <div className="flex-1">
                 <p className="font-medium text-brand-900">{l.name}</p>
