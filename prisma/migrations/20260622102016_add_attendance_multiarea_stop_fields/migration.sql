@@ -28,7 +28,7 @@ CREATE TABLE `Attendance` (
 
     UNIQUE INDEX `Attendance_driverId_date_key`(`driverId`, `date`),
     PRIMARY KEY (`id`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
 CREATE TABLE `_DriverAreas` (
@@ -37,7 +37,7 @@ CREATE TABLE `_DriverAreas` (
 
     UNIQUE INDEX `_DriverAreas_AB_unique`(`A`, `B`),
     INDEX `_DriverAreas_B_index`(`B`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- AddForeignKey
 ALTER TABLE `Attendance` ADD CONSTRAINT `Attendance_driverId_fkey` FOREIGN KEY (`driverId`) REFERENCES `DriverProfile`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
