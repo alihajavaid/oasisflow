@@ -8,6 +8,7 @@ const nextConfig: NextConfig = {
     cpus: Number(process.env.NEXT_BUILD_CPUS) || 1,
   },
   images: {
+    unoptimized: true,
     remotePatterns: [
       { protocol: "https", hostname: "oasisflowwater.com" },
       { protocol: "https", hostname: "*.tile.openstreetmap.org" },
