@@ -1,0 +1,9 @@
+export const WHATSAPP_NUMBER = "971566660755";
+export const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_NUMBER}`;
+export const COMPANY_NAME = "OasisFlow";
+export const COMPANY_ADDRESS = "Oasisflow, M38, Mussafah, Abu Dhabi, UAE";
+export const COMPANY_PHONE = "02 584 6870 / 05 66 66 07 55";
+export const COMPANY_EMAIL = "info@oasisflowwater.com";
+export const DEPOT_LAT = Number(process.env.COMPANY_DEPOT_LAT ?? 24.3392);
+export const DEPOT_LNG = Number(process.env.COMPANY_DEPOT_LNG ?? 54.5012);
+export const IMG = "https://oasisflowwater.com/images";

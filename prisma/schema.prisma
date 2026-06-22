@@ -1,0 +1,329 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+enum Role {
+  ADMIN
+  DRIVER
+  CUSTOMER
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  OUT_FOR_DELIVERY
+  DELIVERED
+  CANCELLED
+}
+
+enum DeliveryStatus {
+  REQUESTED
+  SCHEDULED
+  OUT_FOR_DELIVERY
+  DELIVERED
+  SKIPPED
+  CANCELLED
+}
+
+enum CouponStatus {
+  UNUSED
+  USED
+  VOID
+}
+
+enum RouteStatus {
+  PLANNED
+  IN_PROGRESS
+  COMPLETED
+}
+
+enum PaymentStatus {
+  UNPAID
+  PAID
+  REFUNDED
+}
+
+enum InventoryTxnType {
+  IN
+  OUT
+  ADJUSTMENT
+}
+
+enum PayrollStatus {
+  PENDING
+  PAID
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  LEAVE
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  phone        String?
+  passwordHash String
+  role         Role     @default(CUSTOMER)
+  address      String?
+  lat          Float?
+  lng          Float?
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // customer relations
+  orders           Order[]
+  couponBooks      CouponBook[]
+  feedback         Feedback[]
+  deliveryRequests DeliveryRequest[]
+
+  // driver relations
+  driverProfile   DriverProfile?
+  routes          Route[]        @relation("DriverRoutes")
+  redeemedCoupons Coupon[]       @relation("RedeemedByDriver")
+}
+
+model DriverProfile {
+  id          String          @id @default(cuid())
+  userId      String          @unique
+  user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  areas       DeliveryArea[]  @relation("DriverAreas")
+  vehicleInfo String?
+  baseSalary  Float           @default(0)
+  licenseNo   String?
+  payrolls    PayrollRecord[]
+  attendance  Attendance[]
+}
+
+model DeliveryArea {
+  id          String            @id @default(cuid())
+  name        String            @unique
+  description String?
+  drivers     DriverProfile[]   @relation("DriverAreas")
+  customers   DeliveryRequest[]
+  routes      Route[]
+}
+
+model Attendance {
+  id       String           @id @default(cuid())
+  driverId String
+  driver   DriverProfile    @relation(fields: [driverId], references: [id], onDelete: Cascade)
+  date     DateTime
+  status   AttendanceStatus @default(PRESENT)
+  markedAt DateTime         @default(now())
+
+  @@unique([driverId, date])
+}
+
+model Product {
+  id          String      @id @default(cuid())
+  name        String
+  slug        String      @unique
+  description String?
+  price       Float
+  unit        String      @default("5 Gallon Bottle")
+  imageUrl    String
+  stock       Int         @default(0)
+  active      Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+  orderItems  OrderItem[]
+}
+
+model CouponBookType {
+  id             String       @id @default(cuid())
+  code           String       @unique // e.g. CB-17
+  name           String
+  totalCoupons   Int
+  price          Float
+  pricePerCoupon Float
+  perks          String?
+  imageUrl       String
+  active         Boolean      @default(true)
+  couponBooks    CouponBook[]
+  orderItems     OrderItem[]
+}
+
+model CouponBook {
+  id               String            @id @default(cuid())
+  customerId       String
+  customer         User              @relation(fields: [customerId], references: [id])
+  typeId           String
+  type             CouponBookType    @relation(fields: [typeId], references: [id])
+  totalCoupons     Int
+  remainingCoupons Int
+  purchasedAt      DateTime          @default(now())
+  status           String            @default("ACTIVE") // ACTIVE | COMPLETED
+  coupons          Coupon[]
+  deliveryRequests DeliveryRequest[]
+}
+
+model Coupon {
+  id                String           @id @default(cuid())
+  code              String           @unique
+  couponBookId      String
+  couponBook        CouponBook       @relation(fields: [couponBookId], references: [id])
+  status            CouponStatus     @default(UNUSED)
+  usedAt            DateTime?
+  usedByDriverId    String?
+  usedByDriver      User?            @relation("RedeemedByDriver", fields: [usedByDriverId], references: [id])
+  deliveryRequestId String?          @unique
+  deliveryRequest   DeliveryRequest? @relation(fields: [deliveryRequestId], references: [id])
+}
+
+model Order {
+  id               String            @id @default(cuid())
+  customerId       String
+  customer         User              @relation(fields: [customerId], references: [id])
+  status           OrderStatus       @default(PENDING)
+  paymentStatus    PaymentStatus     @default(UNPAID)
+  totalAmount      Float
+  deliveryAddress  String
+  lat              Float?
+  lng              Float?
+  notes            String?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  items            OrderItem[]
+  deliveryRequests DeliveryRequest[]
+}
+
+model OrderItem {
+  id               String          @id @default(cuid())
+  orderId          String
+  order            Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId        String?
+  product          Product?        @relation(fields: [productId], references: [id])
+  couponBookTypeId String?
+  couponBookType   CouponBookType? @relation(fields: [couponBookTypeId], references: [id])
+  quantity         Int
+  price            Float
+}
+
+model DeliveryRequest {
+  id            String         @id @default(cuid())
+  customerId    String
+  customer      User           @relation(fields: [customerId], references: [id])
+  orderId       String?
+  order         Order?         @relation(fields: [orderId], references: [id])
+  couponBookId  String?
+  couponBook    CouponBook?    @relation(fields: [couponBookId], references: [id])
+  areaId        String?
+  area          DeliveryArea?  @relation(fields: [areaId], references: [id])
+  bottlesQty    Int            @default(1)
+  emptiesToPick Int            @default(1)
+  address       String
+  lat           Float
+  lng           Float
+  requestedDate DateTime       @default(now())
+  status        DeliveryStatus @default(REQUESTED)
+  coupon        Coupon?
+  stop          Stop?
+  createdAt     DateTime       @default(now())
+}
+
+model Route {
+  id              String        @id @default(cuid())
+  driverId        String
+  driver          User          @relation("DriverRoutes", fields: [driverId], references: [id])
+  areaId          String?
+  area            DeliveryArea? @relation(fields: [areaId], references: [id])
+  date            DateTime
+  status          RouteStatus   @default(PLANNED)
+  totalDistanceKm Float?
+  startLat        Float?
+  startLng        Float?
+  stops           Stop[]
+  createdAt       DateTime      @default(now())
+}
+
+model Stop {
+  id                String          @id @default(cuid())
+  routeId           String
+  route             Route           @relation(fields: [routeId], references: [id], onDelete: Cascade)
+  deliveryRequestId String          @unique
+  deliveryRequest   DeliveryRequest @relation(fields: [deliveryRequestId], references: [id])
+  sequence          Int
+  status            DeliveryStatus  @default(SCHEDULED)
+  startedAt         DateTime?
+  deliveredAt       DateTime?
+  cashReceived      Boolean         @default(false)
+  cashAmount        Float?
+}
+
+model Feedback {
+  id         String   @id @default(cuid())
+  customerId String
+  customer   User     @relation(fields: [customerId], references: [id])
+  message    String
+  rating     Int      @default(5)
+  response   String?
+  createdAt  DateTime @default(now())
+}
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  phone     String?
+  message   String
+  handled   Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model InventoryItem {
+  id           String                 @id @default(cuid())
+  name         String
+  sku          String                 @unique
+  quantity     Int                    @default(0)
+  unit         String                 @default("bottle")
+  reorderLevel Int                    @default(20)
+  costPerUnit  Float                  @default(0)
+  transactions InventoryTransaction[]
+}
+
+model InventoryTransaction {
+  id        String           @id @default(cuid())
+  itemId    String
+  item      InventoryItem    @relation(fields: [itemId], references: [id])
+  type      InventoryTxnType
+  quantity  Int
+  reason    String?
+  createdAt DateTime         @default(now())
+}
+
+model Expense {
+  id          String   @id @default(cuid())
+  category    String
+  description String?
+  amount      Float
+  date        DateTime @default(now())
+  createdAt   DateTime @default(now())
+}
+
+model PayrollRecord {
+  id         String        @id @default(cuid())
+  driverId   String
+  driver     DriverProfile @relation(fields: [driverId], references: [id])
+  period     String // e.g. "2026-06"
+  baseSalary Float
+  bonus      Float         @default(0)
+  deductions Float         @default(0)
+  totalPaid  Float
+  status     PayrollStatus @default(PENDING)
+  paidAt     DateTime?
+  createdAt  DateTime      @default(now())
+}
+
+model ContentBlock {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String
+  updatedAt DateTime @updatedAt
+}
