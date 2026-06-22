@@ -1,20 +1,20 @@
 /*
   Warnings:
 
-  - You are about to drop the column `areaId` on the `driverprofile` table. All the data in the column will be lost.
+  - You are about to drop the column `areaId` on the `DriverProfile` table. All the data in the column will be lost.
 
 */
 -- DropForeignKey
-ALTER TABLE `driverprofile` DROP FOREIGN KEY `DriverProfile_areaId_fkey`;
+ALTER TABLE `DriverProfile` DROP FOREIGN KEY `DriverProfile_areaId_fkey`;
 
 -- DropIndex
-DROP INDEX `DriverProfile_areaId_fkey` ON `driverprofile`;
+DROP INDEX `DriverProfile_areaId_fkey` ON `DriverProfile`;
 
 -- AlterTable
-ALTER TABLE `driverprofile` DROP COLUMN `areaId`;
+ALTER TABLE `DriverProfile` DROP COLUMN `areaId`;
 
 -- AlterTable
-ALTER TABLE `stop` ADD COLUMN `cashAmount` DOUBLE NULL,
+ALTER TABLE `Stop` ADD COLUMN `cashAmount` DOUBLE NULL,
     ADD COLUMN `cashReceived` BOOLEAN NOT NULL DEFAULT false,
     ADD COLUMN `startedAt` DATETIME(3) NULL;
 
