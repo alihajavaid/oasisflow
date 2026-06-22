@@ -6,6 +6,9 @@ const nextConfig: NextConfig = {
   basePath,
   experimental: {
     cpus: Number(process.env.NEXT_BUILD_CPUS) || 1,
+    serverActions: {
+      bodySizeLimit: "6mb",
+    },
   },
   images: {
     unoptimized: true,
